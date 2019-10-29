@@ -41,10 +41,52 @@ RUN   echo "deb  http://deb.debian.org/debian stretch main contrib non-free" >> 
         
 # ----  R packages needed -------
 
-RUN Rscript -e "install.packages(c(\
+RUN   Rscript -e "install.packages(c(\
         'devtools'\
       , 'tidyverse' \
-      ))" 
+      ))" \
+  &&  Rscript -e "install.packages('h2o', type='source', \
+        repos=(c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R')))" \
+  &&  Rscript -e "install.packages(c(\
+        'compiler', \
+        'corrr',  \
+        'data.table',  \
+        'DBI',  \
+        'doParallel',  \
+        'dplyr',  \
+        'dtplyr',  \
+        'foreach',  \
+        'fs',  \
+        'ggpubr',  \
+        'gpuR',  \
+        'h2o',  \
+        'ini',  \
+        'iterators',  \
+        'keras',  \
+        'lubridate',  \
+        'optparse',  \
+        'parallel',  \
+        'profvis',  \
+        'Quandl',  \
+        'rChoiceDialogs',  \
+        'recipes',  \
+        'reticulate',  \
+        'rJava',  \
+        'rlang',  \
+        'rsample',  \
+        'RSQLite',  \
+        'stringr',  \
+        'tcltk',  \
+        'tibble',  \
+        'tibbletime',  \
+        'tidyquant',  \
+        'tidyverse',  \
+        'timetk',  \
+        'tools',  \
+        'utils' \
+      ), dependencies = T, Ncpus = 16, quiet = F, clean = T)" \
+  && Rscript -e "keras::install_keras(method = 'auto', tensorflow = 'gpu')"
+        
 
         
 
