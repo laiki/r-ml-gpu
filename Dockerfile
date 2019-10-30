@@ -19,10 +19,17 @@ ENV PATH="${PATH}:/opt/conda/bin"
 
 RUN pip install --upgrade pip
 
-RUN R -e 'install.packages("remotes", repo = "https://cloud.r-project.org")' -e 'remotes::install_github("rstudio/reticulate")' \
+RUN R -e 'install.packages("remotes", repo = "https://cloud.r-project.org", clean = TRUE, Ncpus = 16)' -e 'remotes::install_github("rstudio/reticulate")' \
   -e 'reticulate::virtualenv_create()'
 
-RUN Rscript -e "install.packages('keras')"
+RUN Rscript -e "install.packages('keras', clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "keras::install_keras(method = 'conda', tensorflow = 'gpu')"
 
+RUN Rscript -e "install.packages(c(\
+                         'tibbletime',  'corrr', 'h2o',  \
+                         'rsample', 'timetk', 'tidyquant', \
+                         'Quandl', 'ggpubr', 'rJava', \
+                         'rChoiceDialogs', 'optparse', 'dtplyr', \
+                         'profvis', 'gpuR' \                         
+                        ), clean = TRUE, Ncpus = 16)"
 
