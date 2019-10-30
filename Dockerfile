@@ -28,7 +28,7 @@ RUN Rscript -e "keras::install_keras(method = 'conda', tensorflow = 'gpu')"
 
 RUN apt-get -y install default-jdk && \
     apt-get update && \
-    apt-get upgrade
+    apt-get -y upgrade
 
 # ---- additional
 
