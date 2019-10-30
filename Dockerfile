@@ -84,8 +84,8 @@ RUN   Rscript -e "install.packages(c(\
         'timetk',  \
         'tools',  \
         'utils' \
-      ), dependencies = T, Ncpus = 16, quiet = F, clean = T)" \
-  && Rscript -e "keras::install_keras(method = 'auto', tensorflow = 'gpu')"
+      ), dependencies = T, Ncpus = 16, quiet = F, clean = T)" 
+##RUN Rscript -e "keras::install_keras(method = 'auto', tensorflow = 'gpu')"
         
 
         
