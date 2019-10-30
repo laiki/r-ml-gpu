@@ -1,14 +1,23 @@
 FROM dceoy/rstudio-server
 
-# ---- cuda stuff ----
+# ---- common stuff
 
-RUN   apt-get update \
-  &&  apt-get install -y --no-install-recommends \
-        nvidia-cuda-dev 
+RUN apt-get update && \
+    apt-get -y install \
+      wget software-properties-common
+
+# ---- NVIDIA stuff ----
+
+RUN   wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin && \
+  sudo mv cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600 && \
+  sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub && \
+  sudo add-apt-repository "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/ /" && \
+  sudo apt-get update && \
+  sudo apt-get install -y --no-install-recommends \
+        cuda nvidia-cuda-dev
 
 # ---- python suff
 
-RUN apt-get -y install wget
 RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.sh -O ~/anaconda.sh && \
     /bin/bash ~/anaconda.sh -b -p /opt/conda && \
     rm ~/anaconda.sh && \
@@ -34,11 +43,12 @@ RUN apt-get -y install default-jdk && \
 
 RUN apt-get -y --no-install-recommends install \
     libbz2-dev libpcre3-dev  ocl-icd-opencl-dev 
+
 RUN Rscript -e "install.packages(c(\
                          'tibbletime',  'corrr', 'h2o',  \
                          'rsample', 'timetk', 'tidyquant', \
                          'Quandl', 'ggpubr', \
                          'optparse', 'dtplyr', \
-                         'profvis', 'gpuR' \                         
+                         'profvis' \                         
                         ), clean = TRUE, Ncpus = 16)"
 
