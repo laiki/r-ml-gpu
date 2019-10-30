@@ -32,11 +32,13 @@ RUN apt-get -y install default-jdk && \
 
 # ---- additional
 
+RUN apt-get -y --no-install-recommends install \
+    libbz2-dev libpcre3-dev  ocl-icd-opencl-dev 
 RUN Rscript -e "install.packages(c(\
                          'tibbletime',  'corrr', 'h2o',  \
                          'rsample', 'timetk', 'tidyquant', \
-                         'Quandl', 'ggpubr', 'rJava', \
-                         'rChoiceDialogs', 'optparse', 'dtplyr', \
+                         'Quandl', 'ggpubr', \
+                         'optparse', 'dtplyr', \
                          'profvis', 'gpuR' \                         
                         ), clean = TRUE, Ncpus = 16)"
 
