@@ -1,8 +1,9 @@
 FROM nvidia/cuda:10.1-base
 
 #FROM dceoy/rstudio-server
+# run it with docker run --gpus all r_ml nvidia-smi
 
-#ARG DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_FRONTEND=noninteractive
 
 # ---- common stuff
 
