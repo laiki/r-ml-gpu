@@ -28,9 +28,10 @@ RUN Rscript -e "if ('package:h2o' %in% search()) { detach('package:h2o', unload=
                                   clean=TRUE)"
 
 #---- Keras & Tensorflow
-RUN Rscript -e "install.packages( 'keras', clean = TRUE, Ncpus = 16) ; \
-                keras::install_keras(method = 'conda', tensorflow = 'gpu')"
-
+RUN Rscript -e "install.packages( 'keras', clean = TRUE, Ncpus = 16)" && \
+    Rscript -e "keras::install_keras(method = 'conda', \
+                                     tensorflow = 'gpu', \
+                                     conda='/opt/conda/bin/conda')"
 
 #---- OpenCL lib
 #RUN wget -q http://us.download.nvidia.com/XFree86/Linux-x86_64/430.50/NVIDIA-Linux-#x86_64-430.50.run && \
