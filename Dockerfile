@@ -76,7 +76,7 @@ RUN Rscript -e "install.packages('doParallel', clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('profvis',    clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('gpuR',       clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('h2o',        clean = TRUE, Ncpus = 16, \
-                                  type='source' \
+                                  type='source', \
                                   repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))"
 RUN Rscript -e "install.packages('keras',      clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "keras::install_keras(method = 'conda', \
