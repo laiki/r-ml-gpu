@@ -58,31 +58,31 @@ RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.
 ENV PATH="${PATH}:/opt/conda/bin" 
 
 #---- add usefull packages
-#RUN Rscript -e "install.packages( \
-#                   c( 'timetk', 'tidyquant', 'Quandl', 'ggpubr' \
-#                    , 'rsample', 'foreach', 'iterators' \
-#                    , 'tibletime', 'recipes' \
-#                    , 'corrr', 'optparse' \
-#                    , 'doParallel', 'profvis' \
-#                  ) , \
-#                  clean = TRUE, Ncpus = 16)"
+RUN apt-get install -y --no-install-recommends \
+      libcurl4-openssl-dev libssl-dev default-jre
+      
 
-#--- update h2o
-#RUN apt-get install -y --no-install-recommends \
-#               default-sdk && \
-#    Rscript -e "if ('package:h2o' %in% search()) { detach('package:h2o', unload=TRUE) } ; \
-#                if ('h2o' %in% rownames(installed.packages())) { remove.packages('h2o') } ;\
-#                install.packages('h2o', type='source', \
-#                                  repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'), \
-#                                  clean=TRUE)"
+RUN Rscript -e "install.packages('timetk',     clean = TRUE, Ncpus = 16)" 
+RUN Rscript -e "install.packages('tidyquant',  clean = TRUE, Ncpus = 16)"
+RUN Rscript -e "install.packages('ggpubr',     clean = TRUE, Ncpus = 16)"
+RUN Rscript -e "install.packages('rsample',    clean = TRUE, Ncpus = 16)"
+RUN Rscript -e "install.packages('foreach',    clean = TRUE, Ncpus = 16)"
+RUN Rscript -e "install.packages('iterators',  clean = TRUE, Ncpus = 16)" 
+RUN Rscript -e "install.packages('tibletime',  clean = TRUE, Ncpus = 16)"
+RUN Rscript -e "install.packages('recipes',    clean = TRUE, Ncpus = 16)" 
+RUN Rscript -e "install.packages('corrr',      clean = TRUE, Ncpus = 16)"
+RUN Rscript -e "install.packages('optparse',   clean = TRUE, Ncpus = 16)" 
+RUN Rscript -e "install.packages('doParallel', clean = TRUE, Ncpus = 16)"
+RUN Rscript -e "install.packages('profvis',    clean = TRUE, Ncpus = 16)"
+RUN Rscript -e "install.packages('gpuR',       clean = TRUE, Ncpus = 16)"
+RUN Rscript -e "install.packages('h2o',        clean = TRUE, Ncpus = 16, \
+                                  type='source' \
+                                  repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))"
+RUN Rscript -e "install.packages('keras',      clean = TRUE, Ncpus = 16)"
+RUN Rscript -e "keras::install_keras(method = 'conda', \
+                                     tensorflow = '2.0.0-gpu', \
+                                     conda='/opt/conda/bin/conda')"
 
-#---- Keras & Tensorflow
-#RUN Rscript -e "install.packages( 'keras', clean = TRUE, Ncpus = 16)" && \
-#    Rscript -e "keras::install_keras(method = 'conda', \
-#                                     tensorflow = '2.0.0-gpu', \
-#                                     conda='/opt/conda/bin/conda')"
 
-
-#RUN Rscript -e "install.packages('gpuR', clean = TRUE, Ncpus = 16)"
 
 
