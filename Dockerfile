@@ -83,6 +83,8 @@ RUN Rscript -e "keras::install_keras(method = 'conda', \
                                      tensorflow = '2.0.0-gpu', \
                                      conda='/opt/conda/bin/conda')"
 
+RUN Rscript -e "install.packages('fs',         clean = TRUE, Ncpus = 16)" 
+RUN Rscript -e "install.packages('tidyverse',  clean = TRUE, Ncpus = 16)" 
 
 
 
