@@ -68,7 +68,7 @@ RUN Rscript -e "install.packages('ggpubr',     clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('rsample',    clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('foreach',    clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('iterators',  clean = TRUE, Ncpus = 16)" 
-RUN Rscript -e "install.packages('tibletime',  clean = TRUE, Ncpus = 16)"
+RUN Rscript -e "install.packages('tibbletime',  clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('recipes',    clean = TRUE, Ncpus = 16)" 
 RUN Rscript -e "install.packages('corrr',      clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('optparse',   clean = TRUE, Ncpus = 16)" 
@@ -85,6 +85,6 @@ RUN Rscript -e "keras::install_keras(method = 'conda', \
 
 RUN Rscript -e "install.packages('fs',         clean = TRUE, Ncpus = 16)" 
 RUN Rscript -e "install.packages('tidyverse',  clean = TRUE, Ncpus = 16)" 
-
+RUN Rscript -e "install.packages('RSQLite',    clean = TRUE, Ncpus = 16)"
 
 
