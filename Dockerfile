@@ -93,6 +93,8 @@ RUN apt-get install -y cuda-toolkit-10-0 && \
     rm gputools_1.1.tar.gz
     
 RUN Rscript -e "install.packages('data.table',       clean = TRUE, Ncpus = 16)"
+RUN Rscript -e "install.packages('bestNormalize',    clean = TRUE, Ncpus = 16)"
+
 
 
 
