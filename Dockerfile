@@ -87,4 +87,11 @@ RUN Rscript -e "install.packages('fs',         clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('tidyverse',  clean = TRUE, Ncpus = 16)" 
 RUN Rscript -e "install.packages('RSQLite',    clean = TRUE, Ncpus = 16)"
 
+RUN apt-get install cuda-toolkit-10-0 && \
+    wget https://cran.r-project.org/src/contrib/Archive/gputools/gputools_1.1.tar.gz && \
+    R CMD INSTALL --configure-args="--with-nvcc=/usr/local/cuda/bin/nvcc --with-r-include=/usr/share/R/include" gputools_1.1.tar.gz && \
+    rm gputools_1.1.tar.gz
+    
+
+
 
