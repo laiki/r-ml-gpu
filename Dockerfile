@@ -64,6 +64,7 @@ RUN apt-get install -y --no-install-recommends \
 
 RUN Rscript -e "install.packages('timetk',     clean = TRUE, Ncpus = 16)" 
 RUN Rscript -e "install.packages('tidyquant',  clean = TRUE, Ncpus = 16)"
+RUN Rscript -e "remotes::install_version('cowplot', version = '0.9.4', build_vignettes = TRUE)"
 RUN Rscript -e "install.packages('ggpubr',     clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('rsample',    clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('foreach',    clean = TRUE, Ncpus = 16)"
