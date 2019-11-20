@@ -94,7 +94,7 @@ RUN apt-get install -y cuda-toolkit-10-0 && \
     
 RUN Rscript -e "install.packages('data.table',       clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('bestNormalize',    clean = TRUE, Ncpus = 16)"
-
+RUN Rscript -e "install.packages('dtplyr',           clean = TRUE, Ncpus = 16)"
 
 
 
