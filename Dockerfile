@@ -100,7 +100,7 @@ RUN Rscript -e "install.packages('dtplyr',           clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('devtools',         clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('ini',              clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('RCurl',            clean = TRUE, Ncpus = 16)"
-RUN Rscript -e "library(dplyr)" -e "versions <-tibble::as_tibble(installed.packages())" -e "keras_version <-as.character( versions %>% filter(Package=='keras') %>% select(Version) %>% unlist() )"  -e "tensorflow_version <- as.character( versions %>% filter(Package=='tensorflow') %>% select(Version) %>% unlist() )"  -e "remotes::install_github('jcrodriguez1989/autokeras', keras = keras_version, tensorflow = tensorflow_version, upgrade='never',  clean = TRUE, Ncpus = 16)"
+RUN Rscript -e "library(dplyr)" -e "versions <-tibble::as_tibble(installed.packages())" -e "keras_version <-as.character( versions %>% filter(Package=='keras') %>% select(Version) %>% unlist() )"  -e "tensorflow_version <- as.character( versions %>% filter(Package=='tensorflow') %>% select(Version) %>% unlist() )"  -e "remotes::install_github('jcrodriguez1989/autokeras', keras = keras_version, tensorflow = paste0(tensorflow_version, '-gpu'), upgrade='never',  clean = TRUE, Ncpus = 16)"
 
 
 
