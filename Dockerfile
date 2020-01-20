@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:2.0.0-gpu-py3
+FROM tensorflow/tensorflow:latest-gpu-py3
 
 ARG DEBIAN_FRONTEND=noninteractive
 ## Set a default user. Available via runtime flag `--user docker` 
@@ -54,7 +54,7 @@ RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.
     rm ~/anaconda.sh && \
     ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
     echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
-    echo "conda activate base" >> ~/.bashrc
+    /opt/conda/bin/conda update -n base -c defaults conda
 ENV PATH="${PATH}:/opt/conda/bin" 
 
 #---- add usefull packages
@@ -75,14 +75,18 @@ RUN Rscript -e "install.packages('recipes',    clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('corrr',      clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('optparse',   clean = TRUE, Ncpus = 16)" 
 RUN Rscript -e "install.packages('doParallel', clean = TRUE, Ncpus = 16)"
+RUN Rscript -e "install.packages('snow',       clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('profvis',    clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('gpuR',       clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('h2o',        clean = TRUE, Ncpus = 16, \
                                   type='source', \
                                   repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))"
+RUN Rscript -e "install.packages('reticulate',      clean = TRUE, Ncpus = 16)" && \
+    echo "conda activate base" >> ~/.bashrc 
 RUN Rscript -e "install.packages('keras',      clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "keras::install_keras(method = 'conda', \
-                                     tensorflow = '2.0.0-gpu', \
+                                     version = 'default', \
+                                     tensorflow = 'gpu', \
                                      conda='/opt/conda/bin/conda')"
 
 RUN Rscript -e "install.packages('fs',         clean = TRUE, Ncpus = 16)" 
@@ -100,7 +104,18 @@ RUN Rscript -e "install.packages('dtplyr',           clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('devtools',         clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('ini',              clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('RCurl',            clean = TRUE, Ncpus = 16)"
-#RUN Rscript -e "library(dplyr)" -e "versions <-tibble::as_tibble(installed.packages())" -e "keras_version <-as.character( versions %>% filter(Package=='keras') %>% select(Version) %>% unlist() )"  -e "tensorflow_version <- as.character( versions %>% filter(Package=='tensorflow') %>% select(Version) %>% unlist() )"  -e "remotes::install_github('jcrodriguez1989/autokeras', keras = keras_version, tensorflow = paste0(tensorflow_version, '-gpu'), upgrade='never',  clean = TRUE, Ncpus = 16)" 
+
+RUN pip install --upgrade pip && \
+    pip install autokeras && \
+    Rscript -e "remotes::install_github('r-tensorflow/autokeras')" && \
+    Rscript -e "autokeras::install_autokeras( method = 'conda',   \
+                                              conda = '/opt/conda/bin/conda', \
+                                              tensorflow = 'gpu', \
+                                              version = 'default' )"
+      
+
+
+#RUN Rscript -e "library(dplyr)" -e "versions <-tibble::as_tibble(installed.packages())" -e "keras_version <-as.character( versions %>% filter(Package=='keras') %>% select(Version) %>% unlist() )"  -e "tensorflow_version <- as.character( versions %>% filter(Package=='tensorflow') %>% select(Version) %>% unlist() )"  -e "remotes::install_github('r-tensorflow/autokeras', keras = keras_version, tensorflow = paste0(tensorflow_version, '-gpu'), upgrade='never',  clean = TRUE, Ncpus = 16)" 
 #RUN Rscript -e "install_autokeras(method = 'conda', conda = '/opt/conda/bin/conda', version = 'default', keras = keras_version, tensorflow = paste0(tensorflow_version, '-gpu'))"
 
 
