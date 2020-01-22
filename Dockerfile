@@ -109,7 +109,8 @@ RUN Rscript -e "install.packages('keras',      clean = TRUE, Ncpus = 16)" && \
                                      tensorflow = 'gpu', \
                                      conda='/opt/conda/bin/conda')"
 
-RUN pip install autokeras && \
+RUN apt-get install -y cmake && \
+    pip install autokeras && \
     Rscript -e "remotes::install_github('r-tensorflow/autokeras')" \
             -e "autokeras::install_autokeras( method = 'conda',   \
                                               conda = '/opt/conda/bin/conda', \
