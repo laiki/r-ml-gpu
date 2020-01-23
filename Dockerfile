@@ -117,7 +117,7 @@ RUN apt-get install -y cmake && \
                                               tensorflow = 'gpu', \
                                               version = 'default' )"
      
-    
+RUN Rscript -e "install.packages('inline',            clean = TRUE, Ncpus = 16)"    
 
 
 
