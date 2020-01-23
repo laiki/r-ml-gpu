@@ -117,7 +117,13 @@ RUN apt-get install -y cmake && \
                                               tensorflow = 'gpu', \
                                               version = 'default' )"
      
-RUN Rscript -e "install.packages('inline',            clean = TRUE, Ncpus = 16)"    
+RUN Rscript -e "install.packages('inline',            clean = TRUE, Ncpus = 16)"   
+RUN Rscript -e "install.packages('ctv',               clean = TRUE, Ncpus = 16)"   
+
+RUN apt-get install -y pvm-dev openmpi-bin openmpi-common \
+    openmpi-doc libopenmpi-dev && \
+    Rscript -e "install.packages('Rmpi',              clean = TRUE, Ncpus = 16)" 
+#RUN Rscript -e "ctv::install.views('HighPerformanceComputing',  clean = TRUE, Ncpus = 16)" 
 
 
 
