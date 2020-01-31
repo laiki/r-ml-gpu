@@ -58,9 +58,10 @@ RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.
 ENV PATH="${PATH}:/opt/conda/bin" 
 
 #---- add usefull packages
-RUN apt-get install -y --no-install-recommends \
+RUN apt-get update --fix-missing && \
+    apt-get install -y --no-install-recommends \
       ocl-icd-opencl-dev \
-      libcurl4-openssl-dev libssl-dev default-jre
+      libcurl4-openssl-dev libssl-dev default-jre default-jdk
       
 
 RUN Rscript -e "install.packages('readr',      clean = TRUE, Ncpus = 16)"
