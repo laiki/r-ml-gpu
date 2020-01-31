@@ -23,15 +23,13 @@ ENV LC_ALL en_US.UTF-8
     
 RUN apt-get install -y --no-install-recommends \
     r-base-dev && \
-    echo 'options(repos = list(CRAN = "https://cloud.r-project.org/"))' >> /etc/R/Rprofile.site && \
+    echo 'options(repos = "https://cloud.r-project.org/")' >> /etc/R/Rprofile.site && \
     ln -s /usr/share/doc/littler/examples/install.r /usr/local/bin/install.r && \
     ln -s /usr/share/doc/littler/examples/install2.r /usr/local/bin/install2.r && \
     ln -s /usr/share/doc/littler/examples/installGithub.r /usr/local/bin/installGithub.r && \
     ln -s /usr/share/doc/littler/examples/testInstalled.r /usr/local/bin/testInstalled.r && \
     install.r docopt && \
     rm -rf /tmp/downloaded_packages/ 
-## Set the corresponding MRAN snapshot Repo (2014-09-08is the oldest available snapshot)
-RUN echo 'options(repos = list(CRAN = "https://cloud.r-project.org/"))' >> /etc/R/Rprofile.site
    
 #####
 
@@ -44,6 +42,7 @@ RUN apt-get install -y --no-install-recommends \
 VOLUME /home/rstudio/kitematic
 
 EXPOSE 8787
+EXPOSE 8888
 
 ENTRYPOINT ["/usr/lib/rstudio-server/bin/rserver"]
 CMD ["--server-daemonize=0", "--server-app-armor-enabled=0"]
@@ -64,9 +63,10 @@ RUN apt-get install -y --no-install-recommends \
       libcurl4-openssl-dev libssl-dev default-jre
       
 
+RUN Rscript -e "install.packages('readr',      clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('timetk',     clean = TRUE, Ncpus = 16)" 
 RUN Rscript -e "install.packages('tidyquant',  clean = TRUE, Ncpus = 16)"
-RUN Rscript -e "install.packages('remotes',  clean = TRUE, Ncpus = 16)"
+RUN Rscript -e "install.packages('remotes',    clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "remotes::install_version('cowplot', version = '0.9.4', build_vignettes = TRUE)"
 RUN Rscript -e "install.packages('ggpubr',     clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('rsample',    clean = TRUE, Ncpus = 16)"
@@ -89,9 +89,6 @@ RUN Rscript -e "install.packages('dtplyr',           clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('devtools',         clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('ini',              clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('RCurl',            clean = TRUE, Ncpus = 16)"
-RUN Rscript -e "install.packages('h2o',        clean = TRUE, Ncpus = 16, \
-                                  type='source', \
-                                  repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))"
 
 RUN Rscript -e "install.packages('reticulate',      clean = TRUE, Ncpus = 16)"
 RUN conda create --name r-reticulate --yes && \
@@ -124,7 +121,14 @@ RUN Rscript -e "install.packages('ctv',               clean = TRUE, Ncpus = 16)"
 RUN apt-get install -y pvm-dev openmpi-bin openmpi-common \
     openmpi-doc libopenmpi-dev && \
     Rscript -e "install.packages('Rmpi',              clean = TRUE, Ncpus = 16)" 
-#RUN Rscript -e "ctv::install.views('HighPerformanceComputing',  clean = TRUE, Ncpus = 16)" 
 
+RUN Rscript -e "install.packages('h2o',        clean = TRUE, Ncpus = 16, \
+                                  type='source', \
+                                  repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))"
+# in case r-tensorflow/autokeras needs an update, reinstall it
+# RUN Rscript -e "remotes::install_github('r-tensorflow/autokeras')"
+
+# once views are compilable without compilation errorsw going to use them in the image
+# RUN Rscript -e "ctv::install.views('HighPerformanceComputing',  clean = TRUE, Ncpus = 16)" 
 
 
