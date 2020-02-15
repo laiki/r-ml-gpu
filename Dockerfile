@@ -123,11 +123,15 @@ RUN apt-get install -y pvm-dev openmpi-bin openmpi-common \
     openmpi-doc libopenmpi-dev && \
     Rscript -e "install.packages('Rmpi',              clean = TRUE, Ncpus = 16)" 
 
+RUN Rscript -e "install.packages(c('future', 'doFuture'),  clean = TRUE, Ncpus = 16)"
+RUN Rscript -e "install.packages('progressr',  clean = TRUE, Ncpus = 16)"
+
+
 RUN Rscript -e "install.packages('h2o',        clean = TRUE, Ncpus = 16, \
                                   type='source', \
                                   repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))"
 # in case r-tensorflow/autokeras needs an update, reinstall it
-# RUN Rscript -e "remotes::install_github('r-tensorflow/autokeras')"
+# RUN Rscript -e "remotes::update_github('r-tensorflow/autokeras')"
 
 # once views are compilable without compilation errorsw going to use them in the image
 # RUN Rscript -e "ctv::install.views('HighPerformanceComputing',  clean = TRUE, Ncpus = 16)" 
