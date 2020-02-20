@@ -136,4 +136,6 @@ RUN Rscript -e "install.packages('h2o',        clean = TRUE, Ncpus = 16, \
 # once views are compilable without compilation errorsw going to use them in the image
 # RUN Rscript -e "ctv::install.views('HighPerformanceComputing',  clean = TRUE, Ncpus = 16)" 
 
+RUN apt-get update && \
+    apt-get install -y htop
 
