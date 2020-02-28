@@ -129,6 +129,7 @@ RUN Rscript -e "install.packages('h2o',        clean = TRUE, Ncpus = 16, \
                                   type='source', \
                                   repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))"
 
+RUN Rscript -e "update.packages(ask=FALSE,  clean = TRUE, Ncpus = 16)"
 
 # in case r-tensorflow/autokeras needs an update, reinstall it
 # RUN Rscript -e "remotes::update_github('r-tensorflow/autokeras')"
