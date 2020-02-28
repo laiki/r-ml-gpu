@@ -137,7 +137,8 @@ RUN Rscript -e "install.packages('h2o',        clean = TRUE, Ncpus = 16, \
 # RUN Rscript -e "ctv::install.views('HighPerformanceComputing',  clean = TRUE, Ncpus = 16)" 
 
 RUN apt-get update && \
-    apt-get install -y htop
+    apt-get install -y \
+    htop net-tools
 
 
 
