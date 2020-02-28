@@ -128,7 +128,9 @@ RUN Rscript -e "install.packages('progressr',  clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('h2o',        clean = TRUE, Ncpus = 16, \
                                   type='source', \
                                   repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))" && \
-    conda conda create -n h2o4gpuenv -c h2oai -c conda-forge h2o4gpu-cuda10
+    conda --yes create -n h2o4gpuenv -c h2oai -c conda-forge h2o4gpu-cuda10
+
+RUN Rscript -e "install.packages('tidyquant',  clean = TRUE, Ncpus = 16)"
 
 RUN Rscript -e "update.packages(ask=FALSE,  clean = TRUE, Ncpus = 16)"
 
