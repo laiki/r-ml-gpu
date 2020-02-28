@@ -41,8 +41,6 @@ RUN apt-get install -y --no-install-recommends \
 ## automatically link a shared volume for kitematic users
 VOLUME /home/rstudio/kitematic
 
-EXPOSE 8787
-EXPOSE 8888
 
 ENTRYPOINT ["/usr/lib/rstudio-server/bin/rserver"]
 CMD ["--server-daemonize=0", "--server-app-armor-enabled=0"]
@@ -130,6 +128,8 @@ RUN Rscript -e "install.packages('progressr',  clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('h2o',        clean = TRUE, Ncpus = 16, \
                                   type='source', \
                                   repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))"
+
+
 # in case r-tensorflow/autokeras needs an update, reinstall it
 # RUN Rscript -e "remotes::update_github('r-tensorflow/autokeras')"
 
@@ -138,4 +138,8 @@ RUN Rscript -e "install.packages('h2o',        clean = TRUE, Ncpus = 16, \
 
 RUN apt-get update && \
     apt-get install -y htop
+
+
+
+EXPOSE 8787 54321
 
