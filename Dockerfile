@@ -21,7 +21,11 @@ RUN apt-get update && \
     /usr/sbin/update-locale LANG=en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
     
-RUN apt-get install -y --no-install-recommends \
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && \
+    echo "deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/" >> /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get upgrade -y && \    
+    apt-get install -y --no-install-recommends \
     r-base-dev && \
     echo 'options(repos = "https://cloud.r-project.org/")' >> /etc/R/Rprofile.site && \
     ln -s /usr/share/doc/littler/examples/install.r /usr/local/bin/install.r && \
@@ -59,9 +63,11 @@ ENV PATH="${PATH}:/opt/conda/bin"
 RUN apt-get update --fix-missing && \
     apt-get install -y --no-install-recommends \
       ocl-icd-opencl-dev \
-      libcurl4-openssl-dev libssl-dev default-jre default-jdk
+      libcurl4-openssl-dev libssl-dev \
+      default-jre default-jdk \
+      libxml2-dev
       
-
+RUN Rscript -e "install.packages('xml2',       clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('readr',      clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('timetk',     clean = TRUE, Ncpus = 16)" 
 RUN Rscript -e "install.packages('tidyquant',  clean = TRUE, Ncpus = 16)"
@@ -129,8 +135,6 @@ RUN Rscript -e "install.packages('h2o',        clean = TRUE, Ncpus = 16, \
                                   type='source', \
                                   repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))" && \
     conda create -n h2o4gpuenv -c h2oai -c conda-forge h2o4gpu-cuda10 --yes 
-
-RUN Rscript -e "install.packages('tidyquant',  clean = TRUE, Ncpus = 16)"
 
 RUN Rscript -e "update.packages(ask=FALSE,  clean = TRUE, Ncpus = 16)"
 
