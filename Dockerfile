@@ -136,9 +136,10 @@ RUN Rscript -e "install.packages('h2o',        clean = TRUE, Ncpus = 16, \
                                   type='source', \
                                   repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))" 
                                   
-RUN conda create -n h2o4gpuenv -c h2oai -c conda-forge h2o4gpu-cuda10 --yes && \
-    conda activate h2o4gpuenv && \
-    Rscript -e "install.packages('h2o4gpu',  clean = TRUE, Ncpus = 16)"
+RUN conda create -n h2o4gpuenv -c h2oai -c conda-forge h2o4gpu-cuda10 --yes
+RUN conda init bash 
+RUN conda activate h2o4gpuenv 
+RUN Rscript -e "install.packages('h2o4gpu',  clean = TRUE, Ncpus = 16)"
 
 #    Rscript -e "reticulate::use_condaenv(condaenv = 'h2o4gpuenv', conda = '/opt/conda/bin/conda')" \
 #            -e "devtools::install_github('h2oai/h2o4gpu', subdir = 'src/interface_r')"
