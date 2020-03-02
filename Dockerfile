@@ -137,8 +137,10 @@ RUN Rscript -e "install.packages('h2o',        clean = TRUE, Ncpus = 16, \
                                   repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))" 
                                   
 RUN conda create -n h2o4gpuenv -c h2oai -c conda-forge h2o4gpu-cuda10 --yes
-RUN conda init bash 
-RUN conda activate h2o4gpuenv 
+#RUN /opt/conda/bin/conda init bash
+#RUN . /opt/conda/etc/profile.d/conda.sh 
+#RUN /opt/conda/bin/conda activate h2o4gpuenv 
+
 RUN Rscript -e "install.packages('h2o4gpu',  clean = TRUE, Ncpus = 16)"
 
 #    Rscript -e "reticulate::use_condaenv(condaenv = 'h2o4gpuenv', conda = '/opt/conda/bin/conda')" \
@@ -147,10 +149,7 @@ RUN Rscript -e "install.packages('h2o4gpu',  clean = TRUE, Ncpus = 16)"
 
 RUN Rscript -e "update.packages(ask=FALSE,  clean = TRUE, Ncpus = 16)"
 
-# in case r-tensorflow/autokeras needs an update, reinstall it
-RUN Rscript -e "remotes::update_github('r-tensorflow/autokeras')"
-
-# once views are compilable without compilation errorsw going to use them in the image
+# once views are compilable without compilation errors going to use them in the image
 # RUN Rscript -e "ctv::install.views('HighPerformanceComputing',  clean = TRUE, Ncpus = 16)" 
 
 
