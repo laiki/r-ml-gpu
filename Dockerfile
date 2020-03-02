@@ -65,7 +65,8 @@ RUN apt-get update --fix-missing && \
       ocl-icd-opencl-dev \
       libcurl4-openssl-dev libssl-dev \
       default-jre default-jdk \
-      libxml2-dev
+      libxml2-dev \
+      git htop net-tools
       
 RUN Rscript -e "install.packages('xml2',       clean = TRUE, Ncpus = 16)"
 RUN Rscript -e "install.packages('readr',      clean = TRUE, Ncpus = 16)"
@@ -133,22 +134,24 @@ RUN Rscript -e "install.packages('progressr',  clean = TRUE, Ncpus = 16)"
 
 RUN Rscript -e "install.packages('h2o',        clean = TRUE, Ncpus = 16, \
                                   type='source', \
-                                  repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))" && \
-    conda create -n h2o4gpuenv -c h2oai -c conda-forge h2o4gpu-cuda10 --yes && \
-    Rscript -e "devtools::install_github('h2oai/h2o4gpu', subdir = 'src/interface_r')"
+                                  repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))" 
+                                  
+RUN conda create -n h2o4gpuenv -c h2oai -c conda-forge h2o4gpu-cuda10 --yes && \
+    conda activate h2o4gpuenv && \
+    Rscript -e "install.packages('h2o4gpu',  clean = TRUE, Ncpus = 16)"
+
+#    Rscript -e "reticulate::use_condaenv(condaenv = 'h2o4gpuenv', conda = '/opt/conda/bin/conda')" \
+#            -e "devtools::install_github('h2oai/h2o4gpu', subdir = 'src/interface_r')"
     
 
 RUN Rscript -e "update.packages(ask=FALSE,  clean = TRUE, Ncpus = 16)"
 
 # in case r-tensorflow/autokeras needs an update, reinstall it
-# RUN Rscript -e "remotes::update_github('r-tensorflow/autokeras')"
+RUN Rscript -e "remotes::update_github('r-tensorflow/autokeras')"
 
 # once views are compilable without compilation errorsw going to use them in the image
 # RUN Rscript -e "ctv::install.views('HighPerformanceComputing',  clean = TRUE, Ncpus = 16)" 
 
-RUN apt-get update && \
-    apt-get install -y \
-    htop net-tools
 
 EXPOSE 8787 54321
 
