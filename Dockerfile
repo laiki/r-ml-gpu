@@ -67,122 +67,127 @@ RUN pip install --upgrade pip && \
     pip install tensorflow-gpu==2.1.0
 
 #---- usefull R packages 
-RUN "Rscript -e 'dir.create(path = Sys.getenv(\"R_LIBS_USER\"), recursive = T, showWarnings = F)' \
--e 'install.packages(  \
-                     c(\"xml2\"             \
-                     , \"readr\"            \
-                     , \"timetk\"           \
-                     , \"tidyquant\"        \
-                     , \"remotes\"          \                                                                             
-                     , \"ggpubr\"           \
-                     , \"rsample\"          \
-                     , \"foreach\"          \
-                     , \"iterators\"        \
-                     , \"tibbletime\"       \
-                     , \"recipes\"          \
-                     , \"corrr\"            \
-                     , \"optparse\"         \
-                     , \"doParallel\"       \
-                     , \"snow\"             \
-                     , \"doSNOW\"           \
-                     , \"profvis\"          \
-                     , \"fs\"               \
-                     , \"tidyverse\"        \
-                     , \"RSQLite\"          \
-                     , \"data.table\"       \
-                     , \"bestNormalize\"    \
-                     , \"dtplyr\"           \
-                     , \"devtools\"         \
-                     , \"ini\"              \
-                     , \"RCurl\"            \
-                     , \"reticulate\"       \
-                     , \"keras\"            \
-                     , \"autokeras\"        \
-                     , \"inline\"           \
-                     , \"ctv\"              \
-                     , \"Rmpi\"             \
-                     , \"future\"           \
-                     , \"doFuture\"         \
-                     , \"progressr\"        \
-                     , \"h2o4gpu\" )        \
-                     , clean = TRUE         \
-                     , Ncpus = 16)'         \
--e 'keras::install_keras( method = \"conda\",                                      \
-                        version = \"default\",                                     \
-                        tensorflow = \"2.1.0-gpu\",                                \
-                        conda = \"/opt/conda/bin/conda\")'                         \
--e 'autokeras::install_autokeras( method = \"conda\",                              \
-                                conda = \"/opt/conda/bin/conda\",                  \
-                                tensorflow = \"2.1.0-gpu\",                        \
-                                version = \"default\" )'                           \
--e 'install.packages(\"h2o\", lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16,   \
-                    type=\"source\",                                                       \
-                    repos=c(\"http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R\"))' "
-                                                  
+# RUN "Rscript -e 'dir.create(path = Sys.getenv(\"R_LIBS_USER\"), recursive = T, showWarnings = F)' \
+# -e 'install.packages(  \
+#                      c(\"xml2\"             \
+#                      , \"readr\"            \
+#                      , \"timetk\"           \
+#                      , \"tidyquant\"        \
+#                      , \"remotes\"          \                                                                             
+#                      , \"ggpubr\"           \
+#                      , \"rsample\"          \
+#                      , \"foreach\"          \
+#                      , \"iterators\"        \
+#                      , \"tibbletime\"       \
+#                      , \"recipes\"          \
+#                      , \"corrr\"            \
+#                      , \"optparse\"         \
+#                      , \"doParallel\"       \
+#                      , \"snow\"             \
+#                      , \"doSNOW\"           \
+#                      , \"profvis\"          \
+#                      , \"fs\"               \
+#                      , \"tidyverse\"        \
+#                      , \"RSQLite\"          \
+#                      , \"data.table\"       \
+#                      , \"bestNormalize\"    \
+#                      , \"dtplyr\"           \
+#                      , \"devtools\"         \
+#                      , \"ini\"              \
+#                      , \"RCurl\"            \
+#                      , \"reticulate\"       \
+#                      , \"keras\"            \
+#                      , \"autokeras\"        \
+#                      , \"inline\"           \
+#                      , \"ctv\"              \
+#                      , \"Rmpi\"             \
+#                      , \"future\"           \
+#                      , \"doFuture\"         \
+#                      , \"progressr\"        \
+#                      , \"h2o4gpu\" )        \
+#                      , clean = TRUE         \
+#                      , Ncpus = 16)'         \
+# -e 'keras::install_keras( method = \"conda\",                                      \
+#                         version = \"default\",                                     \
+#                         tensorflow = \"2.1.0-gpu\",                                \
+#                         conda = \"/opt/conda/bin/conda\")'                         \
+# -e 'autokeras::install_autokeras( method = \"conda\",                              \
+#                                 conda = \"/opt/conda/bin/conda\",                  \
+#                                 tensorflow = \"2.1.0-gpu\",                        \
+#                                 version = \"default\" )'                           \
+# -e 'install.packages(\"h2o\", lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16,   \
+#                     type=\"source\",                                                       \
+#                     repos=c(\"http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R\"))' "
+#                                                   
 #                     , lib=Sys.getenv(\"R_LIBS_USER\")  \
 
+
+#                              -e 'install.packages(\"remotes\",         lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+#                              -e 'remotes::install_version(\"cowplot\", version = \"0.9.4\",                                        \
+#                                                                        lib=Sys.getenv(\"R_LIBS_USER\"), build_vignettes = TRUE)'   \
+
+
+RUN su - rstudio -c "Rscript -e 'dir.create(path = Sys.getenv(\"R_LIBS_USER\"), recursive = T, showWarnings = F)'                  \
+                             -e 'install.packages(\"xml2\",            lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"readr\",           lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"timetk\",          lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"tidyquant\",       lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"ggpubr\",          lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"rsample\",         lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"foreach\",         lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"iterators\",       lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"tibbletime\",      lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"recipes\",         lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"corrr\",           lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"optparse\",        lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"doParallel\",      lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(c(\"snow\", \"doSNOW\"),                                                         \
+                                                                       lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"profvis\",         lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"fs\",              lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"tidyverse\",       lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"RSQLite\",         lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"data.table\",      lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"bestNormalize\",   lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"dtplyr\",          lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"devtools\",        lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"ini\",             lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"RCurl\",           lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"reticulate\",      lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"keras\",           lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'keras::install_keras(method = \"conda\",                                                          \
+                                                                 version = \"default\",                                            \
+                                                                 tensorflow = \"2.1.0-gpu\",                                       \
+                                                                 conda = \"/opt/conda/bin/conda\")'                                \
+                             -e 'install.packages(\"autokeras\",       lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'autokeras::install_autokeras( method = \"conda\",                                                 \
+                                                                         conda = \"/opt/conda/bin/conda\",                         \
+                                                                         tensorflow = \"2.1.0-gpu\",                               \
+                                                                         version = \"default\" )'                                  \
+                             -e 'install.packages(\"inline\",          lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"ctv\",             lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"Rmpi\",            lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(c(\"future\", \"doFuture\"),                                                     \
+                                                                       lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"progressr\",       lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+                             -e 'install.packages(\"h2o\",             lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16,  \
+                                                                       type=\"source\",                                            \
+                                                                       repos=c(\"http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R\"))' \
+                             -e 'install.packages(\"h2o4gpu\",         lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' "
+#                              -e 'update.packages(ask=FALSE,            lib.loc=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)'  "
+
+
+
 #---- special installation of R packages
-RUN su - rstudio -c "wget https://cran.r-project.org/src/contrib/Archive/gputools/gputools_1.1.tar.gz" && \
-    su - rstudio -c "R CMD INSTALL --configure-args='--with-nvcc=/usr/local/cuda/bin/nvcc --with-r-include=/usr/share/R/include' gputools_1.1.tar.gz" && \
-    su - rstudio -c "rm gputools_1.1.tar.gz"
+RUN "wget https://cran.r-project.org/src/contrib/Archive/gputools/gputools_1.1.tar.gz" && \
+    "R CMD INSTALL --configure-args='--with-nvcc=/usr/local/cuda/bin/nvcc --with-r-include=/usr/share/R/include' gputools_1.1.tar.gz" && \
+    "rm gputools_1.1.tar.gz"
 
     
 EXPOSE 8787 54321
 
 #
 #---- usefull R packages 
-#RUN su - rstudio -c "Rscript -e 'dir.create(path = Sys.getenv(\"R_LIBS_USER\"), recursive = T, showWarnings = F)'                  \
-#                             -e 'install.packages(\"xml2\",            lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"readr\",           lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"timetk\",          lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"tidyquant\",       lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"remotes\",         lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'remotes::install_version(\"cowplot\", version = \"0.9.4\",                                        \
-#                                                                       lib=Sys.getenv(\"R_LIBS_USER\"), build_vignettes = TRUE)'   \
-#                             -e 'install.packages(\"ggpubr\",          lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"rsample\",         lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"foreach\",         lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"iterators\",       lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"tibbletime\",      lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"recipes\",         lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"corrr\",           lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"optparse\",        lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"doParallel\",      lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(c(\"snow\", \"doSNOW\"),                                                         \
-#                                                                       lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"profvis\",         lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"fs\",              lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"tidyverse\",       lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"RSQLite\",         lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"data.table\",      lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"bestNormalize\",   lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"dtplyr\",          lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"devtools\",        lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"ini\",             lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"RCurl\",           lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"reticulate\",      lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"keras\",           lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'keras::install_keras(method = \"conda\",                                                          \
-#                                                                 version = \"default\",                                            \
-#                                                                 tensorflow = \"2.1.0-gpu\",                                       \
-#                                                                 conda = \"/opt/conda/bin/conda\")'                                \
-#                             -e 'install.packages(\"autokeras\",       lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'autokeras::install_autokeras( method = \"conda\",                                                 \
-#                                                                         conda = \"/opt/conda/bin/conda\",                         \
-#                                                                         tensorflow = \"2.1.0-gpu\",                               \
-#                                                                         version = \"default\" )'                                  \
-#                             -e 'install.packages(\"inline\",          lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"ctv\",             lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"Rmpi\",            lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(c(\"future\", \"doFuture\"),                                                     \
-#                                                                       lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"progressr\",       lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'install.packages(\"h2o\",             lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16,  \
-#                                                                       type=\"source\",                                            \
-#                                                                       repos=c(\"http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R\"))' \
-#                             -e 'install.packages(\"h2o4gpu\",         lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-#                             -e 'update.packages(ask=FALSE,            lib.loc=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)'  "
-# 
 ## RUN Rscript -e 'ctv::install.views(\"HighPerformanceComputing\",  clean = TRUE, Ncpus = 16)' 
 #                             -e 'remotes::install_version(\"cowplot\", version = \"0.9.4\",                             \
 # RUN Rscript -e 'ctv::install.views(\"HighPerformanceComputing\",  clean = TRUE, Ncpus = 16)' 
