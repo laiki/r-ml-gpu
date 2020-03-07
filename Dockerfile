@@ -126,6 +126,9 @@ RUN pip install --upgrade pip && \
 #                              -e 'remotes::install_version(\"cowplot\", version = \"0.9.4\",                                        \
 #                                                                        lib=Sys.getenv(\"R_LIBS_USER\"), build_vignettes = TRUE)'   \
 
+#RUN apt-get install cuda-gdb-src-10-1
+#wget http://developer.download.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda_10.1.243_418.87.00_linux.runsudo 
+#sh cuda_10.1.243_418.87.00_linux.run
 
 RUN su - rstudio -c "Rscript -e 'dir.create(path = Sys.getenv(\"R_LIBS_USER\"), recursive = T, showWarnings = F)'                  \
                              -e 'install.packages(\"xml2\",            lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
@@ -152,28 +155,33 @@ RUN su - rstudio -c "Rscript -e 'dir.create(path = Sys.getenv(\"R_LIBS_USER\"), 
                              -e 'install.packages(\"dtplyr\",          lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
                              -e 'install.packages(\"devtools\",        lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
                              -e 'install.packages(\"ini\",             lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-                             -e 'install.packages(\"RCurl\",           lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-                             -e 'install.packages(\"reticulate\",      lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-                             -e 'install.packages(\"keras\",           lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-                             -e 'keras::install_keras(method = \"conda\",                                                          \
-                                                                 version = \"default\",                                            \
-                                                                 tensorflow = \"2.1.0-gpu\",                                       \
-                                                                 conda = \"/opt/conda/bin/conda\")'                                \
-                             -e 'install.packages(\"autokeras\",       lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-                             -e 'autokeras::install_autokeras( method = \"conda\",                                                 \
-                                                                         conda = \"/opt/conda/bin/conda\",                         \
-                                                                         tensorflow = \"2.1.0-gpu\",                               \
-                                                                         version = \"default\" )'                                  \
-                             -e 'install.packages(\"inline\",          lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-                             -e 'install.packages(\"ctv\",             lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-                             -e 'install.packages(\"Rmpi\",            lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-                             -e 'install.packages(c(\"future\", \"doFuture\"),                                                     \
-                                                                       lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-                             -e 'install.packages(\"progressr\",       lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
-                             -e 'install.packages(\"h2o\",             lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16,  \
-                                                                       type=\"source\",                                            \
-                                                                       repos=c(\"http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R\"))' \
-                             -e 'install.packages(\"h2o4gpu\",         lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' "
+                             -e 'install.packages(\"RCurl\",           lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' "
+#                              -e 'install.packages(\"reticulate\",      lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+# reticulate::use_python(python = '/opt/conda/bin/python')
+# tensorflow::install_tensorflow(version = "2.1.0", method = 'conda', conda = '/opt/conda/bin/conda')
+#devtools::install_github("rstudio/keras", force=T)
+
+#                              -e 'install.packages(\"keras\",           lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+#                              devtools::install_github("rstudio/keras")
+#                              -e 'keras::install_keras(method = \"conda\",                                                          \
+#                                                                  version = \"default\",                                            \
+#                                                                  tensorflow = \"2.1.0-gpu\",                                       \
+#                                                                  conda = \"/opt/conda/bin/conda\")'                                \
+#                              -e 'install.packages(\"autokeras\",       lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+#                              -e 'autokeras::install_autokeras( method = \"conda\",                                                 \
+#                                                                          conda = \"/opt/conda/bin/conda\",                         \
+#                                                                          tensorflow = \"2.1.0-gpu\",                               \
+#                                                                          version = \"default\" )'                                  \
+#                              -e 'install.packages(\"inline\",          lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+#                              -e 'install.packages(\"ctv\",             lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+#                              -e 'install.packages(\"Rmpi\",            lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+#                              -e 'install.packages(c(\"future\", \"doFuture\"),                                                     \
+#                                                                        lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+#                              -e 'install.packages(\"progressr\",       lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' \
+#                              -e 'install.packages(\"h2o\",             lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16,  \
+#                                                                        type=\"source\",                                            \
+#                                                                        repos=c(\"http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R\"))' \
+#                              -e 'install.packages(\"h2o4gpu\",         lib=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)' "
 #                              -e 'update.packages(ask=FALSE,            lib.loc=Sys.getenv(\"R_LIBS_USER\"), clean = TRUE, Ncpus = 16)'  "
 
 
