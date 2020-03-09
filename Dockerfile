@@ -111,16 +111,15 @@ RUN Rscript  -e "install.packages('xml2', clean = TRUE, Ncpus = 16)" \
              -e "install.packages('devtools',         clean = TRUE, Ncpus = 16)" \
              -e "install.packages('ini',              clean = TRUE, Ncpus = 16)" \
              -e "install.packages('RCurl',            clean = TRUE, Ncpus = 16)" \
-             -e "install.packages('reticulate',       clean = TRUE, Ncpus = 16)" 
-RUN Rscript  -e "install.packages(c('inline', 'ctv', 'Rmpi', 'future', 'doFuture', 'progressr'),        \
-                                  clean = TRUE, Ncpus = 16)" 
-
-RUN Rscript  -e "install.packages('h2o',  clean = TRUE, Ncpus = 16,                                     \
+             -e "install.packages('reticulate',       clean = TRUE, Ncpus = 16)" \
+             -e "install.packages(c('inline', 'ctv', 'Rmpi', 'future', 'doFuture', 'progressr'),        \
+                                  clean = TRUE, Ncpus = 16)"                                            \
+             -e "install.packages('h2o',  clean = TRUE, Ncpus = 16,                                     \
                                    type='source',                                                       \
                                    repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))" \
-             -e "install.packages('h2o4gpu',          clean = TRUE, Ncpus = 16)" 
-
-RUN Rscript  -e "reticulate::use_python(python = '/opt/conda/bin/python')                               \
+             -e "install.packages('h2o4gpu',          clean = TRUE, Ncpus = 16)"                        \
+             -e "reticulate::use_python(python = '/opt/conda/bin/python')"                              \
+             -e "install.packages('tensorflow',       clean = TRUE, Ncpus = 16)"                        \
              -e "tensorflow::install_tensorflow(version = '2.1.0', method = 'conda', conda = '/opt/conda/bin/conda')" \
              -e "devtools::install_github('rstudio/keras', force=T)"                                    \
              -e "keras::install_keras(method = 'conda',                                                 \
@@ -132,20 +131,19 @@ RUN Rscript  -e "reticulate::use_python(python = '/opt/conda/bin/python')       
                                                conda = '/opt/conda/bin/conda',                          \
                                                tensorflow = '2.1.0-gpu',                                \
                                                version = 'default' )"                                   
+#             -e "remotes::install_version('cowplot', version = '0.9.4', clean = TRUE, Ncpus = 16)                       
 
-##                           
-#                           
+#---- usefull R stuff
+# RUN Rscript -e "ctv::install.views('HighPerformanceComputing',  clean = TRUE, Ncpus = 16)" 
 
 #---- special installation of R packages
-#RUN "wget https://cran.r-project.org/src/contrib/Archive/gputools/gputools_1.1.tar.gz" && \
-#    "R CMD INSTALL --configure-args='--with-nvcc=/usr/local/cuda/bin/nvcc --with-r-include=/usr/share/R/include' gputools_1.1.tar.gz" && \
-#    "rm gputools_1.1.tar.gz"
+RUN wget "https://cran.r-project.org/src/contrib/Archive/gputools/gputools_1.1.tar.gz" && \
+    R CMD INSTALL --configure-args='--with-nvcc=/usr/local/cuda/bin/nvcc --with-r-include=/usr/share/R/include' gputools_1.1.tar.gz && \
+    rm gputools_1.1.tar.gz
 
     
 EXPOSE 8787 54321
 
-#
-#---- usefull R packages 
-## RUN Rscript -e "ctv::install.views('HighPerformanceComputing',  clean = TRUE, Ncpus = 16)" 
-#                             -e "remotes::install_version('cowplot', version = '0.9.4',                             \
-# RUN Rscript -e "ctv::install.views('HighPerformanceComputing',  clean = TRUE, Ncpus = 16)" 
+# h2o port 54321 seems only available when starting the image with --network=hoat
+# e.g. docker run --rm    --gpus all   --network=host -v <local source dir>:/home/rstudio/src --name <identifier> laiki/r-ml-gpu:latest
+# have fun ;)
