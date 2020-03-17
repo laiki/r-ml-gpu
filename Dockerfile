@@ -1,4 +1,5 @@
-FROM tensorflow/tensorflow:2.1.0-gpu-py3
+FROM tensorflow/tensorflow:nightly-gpu-py3
+#2.1.0-gpu-py3
 
 ARG DEBIAN_FRONTEND=noninteractive
 ## Set a default user. Available via runtime flag `--user docker` 
@@ -92,8 +93,6 @@ RUN apt-get update && \
 ENV CUDA_HOME="/usr/local/cuda"
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$CUDA_HOME/lib64/:$CUDA_HOME/lib/:$CUDA_HOME/extras/CUPTI/lib64"
 
-RUN python3 -m pip install tensorflow-gpu==2.1.0 && \
-    python3 -m pip install autokeras
      
 #    /opt/conda/bin/conda create -n h2o4gpuenv -c h2oai -c conda-forge h2o4gpu-cuda10 python=3.6 --yes && \
 #    su - rstudio -c "conda init --all" 
@@ -129,9 +128,16 @@ RUN Rscript  -e "install.packages('xml2',             clean = TRUE, Ncpus = 16)"
              -e "install.packages('devtools',         clean = TRUE, Ncpus = 16)" \
              -e "install.packages('ini',              clean = TRUE, Ncpus = 16)" \
              -e "install.packages('RCurl',            clean = TRUE, Ncpus = 16)" \
-             -e "install.packages('reticulate',       clean = TRUE, Ncpus = 16)" \
              -e "install.packages(c('inline', 'ctv', 'Rmpi', 'future', 'doFuture', 'progressr'),        \
-                                  clean = TRUE, Ncpus = 16)"                                            \
+                                  clean = TRUE, Ncpus = 16)"         
+                                  
+RUN python3 -m pip install tf-nightly       && \
+    python3 -m pip install autokeras        && \
+    apt update                              && \
+    apt install python3-dev python3-pip     && \
+    pip3 install -U virtualenv 
+                                   
+RUN Rscript  -e "install.packages('reticulate',       clean = TRUE, Ncpus = 16)"                        \                                  
              -e "install.packages('h2o',  clean = TRUE, Ncpus = 16,                                     \
                                    type='source',                                                       \
                                    repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))" \
