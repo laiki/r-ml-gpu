@@ -73,13 +73,21 @@ RUN apt-get update --fix-missing && \
 
       
 #---- cuda stuff ----
+
 RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin && \
-    mv cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600                               && \
-    wget http://developer.download.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda-repo-ubuntu1804-10-1-local-10.1.243-418.87.00_1.0-1_amd64.deb && \
-    dpkg -i cuda-repo-ubuntu1804-10-1-local-10.1.243-418.87.00_1.0-1_amd64.deb                          && \
-    apt-key add /var/cuda-repo-10-1-local-10.1.243-418.87.00/7fa2af80.pub                               && \
-    apt-get update                                                                                      && \
-    apt-get -y install cuda-10.1
+    mv cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600 && \
+    apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub && \
+    add-apt-repository "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/ /" && \
+    apt-get update && \
+    apt-get -y install cuda
+
+#RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin && \
+#    mv cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600                               && \
+#    wget http://developer.download.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda-repo-ubuntu1804-10-1-local-10.1.243-418.87.00_1.0-1_amd64.deb && \
+#    dpkg -i cuda-repo-ubuntu1804-10-1-local-10.1.243-418.87.00_1.0-1_amd64.deb                          && \
+#    apt-key add /var/cuda-repo-10-1-local-10.1.243-418.87.00/7fa2af80.pub                               && \
+#    apt-get update                                                                                      && \
+#    apt-get -y install cuda-10.1
 ENV CUDA_HOME="/usr/local/cuda"
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$CUDA_HOME/lib64/:$CUDA_HOME/lib/:$CUDA_HOME/extras/CUPTI/lib64"
 
