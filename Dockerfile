@@ -51,17 +51,26 @@ RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-2019.10-Linux-x86_6
     ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
     echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
     /opt/conda/bin/conda update -n base -c defaults conda
-ENV PATH="${PATH}:/opt/conda/bin" 
+ENV CONDA_ROOT="/opt/conda"
+ENV PATH="${PATH}:$CONDA_ROOT/bin" 
+
+RUN conda update -n base -c defaults conda --yes && \
+    pip install --upgrade pip && \
+    conda init --all
 
 #---- add packages needed 
 RUN apt-get update --fix-missing && \
     apt-get install -y \
-#      ocl-icd-opencl-dev \
-      libcurl4-gnutls-dev libssl-dev \
       default-jre default-jdk \
       libxml2-dev \
-      libgit2-dev libssh2-1-dev \
-      cmake pvm-dev openmpi-bin openmpi-common openmpi-doc libopenmpi-dev 
+       libssh2-1-dev \
+      cmake pvm-dev openmpi-bin openmpi-common openmpi-doc libopenmpi-dev \
+      libopenblas-dev pbzip2 \
+      libcurl4-openssl-dev libssl-dev libxml2-dev
+
+#      ocl-icd-opencl-dev 
+#      libcurl4-gnutls-dev libssl-dev 
+
       
 #---- cuda stuff ----
 RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin && \
@@ -71,22 +80,22 @@ RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86
     apt-key add /var/cuda-repo-10-1-local-10.1.243-418.87.00/7fa2af80.pub                               && \
     apt-get update                                                                                      && \
     apt-get -y install cuda-10.1
+ENV CUDA_HOME="/usr/local/cuda"
+ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$CUDA_HOME/lib64/:$CUDA_HOME/lib/:$CUDA_HOME/extras/CUPTI/lib64"
 
+RUN python3 -m pip install tensorflow-gpu==2.1.0 && \
+    python3 -m pip install autokeras
+     
+#    /opt/conda/bin/conda create -n h2o4gpuenv -c h2oai -c conda-forge h2o4gpu-cuda10 python=3.6 --yes && \
+#    su - rstudio -c "conda init --all" 
 
-RUN pip install --upgrade pip && \
-    pip install tensorflow-gpu==2.1.0
+    
 
+#    pip install h2o4gpu-0.3.2-cp36-cp36m-linux_x86_64.whl
+    
 #---- usefull R packages 
 
-#                              -e "install.packages('remotes',         lib=Sys.getenv('R_LIBS_USER'), clean = TRUE, Ncpus = 16)" \
-#                              -e "remotes::install_version('cowplot', version = '0.9.4',                                        \
-#                                                                        lib=Sys.getenv('R_LIBS_USER'), build_vignettes = TRUE)"   \
-
-#RUN apt-get install cuda-gdb-src-10-1
-#wget http://developer.download.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda_10.1.243_418.87.00_linux.run
-#sudo sh cuda_10.1.243_418.87.00_linux.run
-
-RUN Rscript  -e "install.packages('xml2', clean = TRUE, Ncpus = 16)" \
+RUN Rscript  -e "install.packages('xml2',             clean = TRUE, Ncpus = 16)" \
              -e "install.packages('readr',            clean = TRUE, Ncpus = 16)" \
              -e "install.packages('timetk',           clean = TRUE, Ncpus = 16)" \
              -e "install.packages('tidyquant',        clean = TRUE, Ncpus = 16)" \
@@ -99,8 +108,8 @@ RUN Rscript  -e "install.packages('xml2', clean = TRUE, Ncpus = 16)" \
              -e "install.packages('corrr',            clean = TRUE, Ncpus = 16)" \
              -e "install.packages('optparse',         clean = TRUE, Ncpus = 16)" \
              -e "install.packages('doParallel',       clean = TRUE, Ncpus = 16)" \
-             -e "install.packages(c('snow', 'doSNOW'),                                                         \
-                                                      clean = TRUE, Ncpus = 16)"   \
+             -e "install.packages(c('snow', 'doSNOW'),                           \
+                                                      clean = TRUE, Ncpus = 16)" \
              -e "install.packages('profvis',          clean = TRUE, Ncpus = 16)" \
              -e "install.packages('fs',               clean = TRUE, Ncpus = 16)" \
              -e "install.packages('tidyverse',        clean = TRUE, Ncpus = 16)" \
@@ -117,7 +126,6 @@ RUN Rscript  -e "install.packages('xml2', clean = TRUE, Ncpus = 16)" \
              -e "install.packages('h2o',  clean = TRUE, Ncpus = 16,                                     \
                                    type='source',                                                       \
                                    repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))" \
-             -e "install.packages('h2o4gpu',          clean = TRUE, Ncpus = 16)"                        \
              -e "reticulate::use_python(python = '/opt/conda/bin/python')"                              \
              -e "install.packages('tensorflow',       clean = TRUE, Ncpus = 16)"                        \
              -e "tensorflow::install_tensorflow(version = '2.1.0', method = 'conda', conda = '/opt/conda/bin/conda')" \
@@ -140,6 +148,8 @@ RUN Rscript  -e "install.packages('xml2', clean = TRUE, Ncpus = 16)" \
 RUN wget "https://cran.r-project.org/src/contrib/Archive/gputools/gputools_1.1.tar.gz" && \
     R CMD INSTALL --configure-args='--with-nvcc=/usr/local/cuda/bin/nvcc --with-r-include=/usr/share/R/include' gputools_1.1.tar.gz && \
     rm gputools_1.1.tar.gz
+
+#RUN Rscript -e "devtools::install_github('h2oai/h2o4gpu', subdir = 'src/interface_r',          clean = TRUE, Ncpus = 16)"  \
 
     
 EXPOSE 8787 54321
