@@ -80,7 +80,7 @@ RUN apt-get update --fix-missing && \
 #    add-apt-repository "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/ /" 
 
 RUN apt-get update && \
-    apt-get -y install cuda
+    apt-get -y install cuda-10.0 cuda-10.1 cuda-10.2
 
 #RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin && \
 #    mv cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600                               && \
