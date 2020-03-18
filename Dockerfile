@@ -1,5 +1,4 @@
-FROM tensorflow/tensorflow:nightly-gpu-py3
-#2.1.0-gpu-py3
+FROM tensorflow/tensorflow:latest-gpu-py3
 
 ARG DEBIAN_FRONTEND=noninteractive
 ## Set a default user. Available via runtime flag `--user docker` 
@@ -46,17 +45,17 @@ CMD ["--server-daemonize=0", "--server-app-armor-enabled=0"]
   
 #---- conda suff
 
-RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-2019.10-Linux-x86_64.sh -O ~/anaconda.sh && \
+RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh -O ~/anaconda.sh && \
     /bin/bash ~/anaconda.sh -b -p /opt/conda && \
     rm ~/anaconda.sh && \
     ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
     echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
-    /opt/conda/bin/conda update -n base -c defaults conda
+    /opt/conda/bin/conda install -n base -c default conda python=3.7 --yes
 ENV CONDA_ROOT="/opt/conda"
 ENV PATH="${PATH}:$CONDA_ROOT/bin" 
 
 RUN conda update -n base -c defaults conda --yes && \
-    pip install --upgrade pip && \
+    python3 -m pip install --upgrade pip && \
     conda init --all
 
 #---- add packages needed 
@@ -130,12 +129,13 @@ RUN Rscript  -e "install.packages('xml2',             clean = TRUE, Ncpus = 16)"
              -e "install.packages('RCurl',            clean = TRUE, Ncpus = 16)" \
              -e "install.packages(c('inline', 'ctv', 'Rmpi', 'future', 'doFuture', 'progressr'),        \
                                   clean = TRUE, Ncpus = 16)"         
-                                  
-RUN python3 -m pip install tf-nightly       && \
-    python3 -m pip install autokeras        && \
-    apt update                              && \
-    apt install python3-dev python3-pip     && \
-    pip3 install -U virtualenv 
+RUN conda update -n base -c defaults conda
+
+RUN apt update                                             && \
+    apt install -y python3-dev python3-pip python3-venv    && \
+    pip3 install -U virtualenv                             && \
+    python3 -m pip install --ignore-installed --upgrade tensorflow      && \
+    python3 -m pip install autokeras        
                                    
 RUN Rscript  -e "install.packages('reticulate',       clean = TRUE, Ncpus = 16)"                        \                                  
              -e "install.packages('h2o',  clean = TRUE, Ncpus = 16,                                     \
@@ -143,16 +143,16 @@ RUN Rscript  -e "install.packages('reticulate',       clean = TRUE, Ncpus = 16)"
                                    repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))" \
              -e "reticulate::use_python(python = '/opt/conda/bin/python')"                              \
              -e "install.packages('tensorflow',       clean = TRUE, Ncpus = 16)"                        \
-             -e "tensorflow::install_tensorflow(version = '2.1.0', method = 'conda', conda = '/opt/conda/bin/conda')" \
+             -e "tensorflow::install_tensorflow(version = 'gpu', method = 'auto', conda = '/opt/conda/bin/conda')" \
              -e "devtools::install_github('rstudio/keras', force=T)"                                    \
-             -e "keras::install_keras(method = 'conda',                                                 \
+             -e "keras::install_keras(method = 'auto',                                                 \
                                       version = 'default',                                              \
-                                      tensorflow = '2.1.0-gpu',                                         \
+                                      tensorflow = 'gpu',                                         \
                                       conda = '/opt/conda/bin/conda')"                                  \
              -e "install.packages('autokeras',        clean = TRUE, Ncpus = 16)"                        \
              -e "autokeras::install_autokeras( method = 'conda',                                        \
                                                conda = '/opt/conda/bin/conda',                          \
-                                               tensorflow = '2.1.0-gpu',                                \
+                                               tensorflow = 'gpu',                                \
                                                version = 'default' )"                                   
 #             -e "remotes::install_version('cowplot', version = '0.9.4', clean = TRUE, Ncpus = 16)                       
 
