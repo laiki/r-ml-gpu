@@ -115,6 +115,7 @@ RUN Rscript  -e "install.packages('xml2',             clean = TRUE, Ncpus = 16)"
              -e "install.packages('corrr',            clean = TRUE, Ncpus = 16)" \
              -e "install.packages('optparse',         clean = TRUE, Ncpus = 16)" \
              -e "install.packages('doParallel',       clean = TRUE, Ncpus = 16)" \
+             -e "install.packages('doMC',             clean = TRUE, Ncpus = 16)" \
              -e "install.packages(c('snow', 'doSNOW'),                           \
                                                       clean = TRUE, Ncpus = 16)" \
              -e "install.packages('profvis',          clean = TRUE, Ncpus = 16)" \
@@ -133,26 +134,27 @@ RUN conda update -n base -c defaults conda
 
 RUN apt update                                             && \
     apt install -y python3-dev python3-pip python3-venv    && \
-    pip3 install -U virtualenv                             && \
-    python3 -m pip install --ignore-installed --upgrade tensorflow      && \
-    python3 -m pip install autokeras        
+    python3 -m pip install --upgrade virtualenv            && \
+    python3 -m pip install --ignore-installed --upgrade keras tensorflow autokeras   
                                    
-RUN Rscript  -e "install.packages('reticulate',       clean = TRUE, Ncpus = 16)"                        \                                  
-             -e "install.packages('h2o',  clean = TRUE, Ncpus = 16,                                     \
+RUN Rscript  -e "install.packages('h2o',  clean = TRUE, Ncpus = 16,                                     \
                                    type='source',                                                       \
-                                   repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))" \
-             -e "reticulate::use_python(python = '/opt/conda/bin/python')"                              \
+                                   repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))" 
+RUN Rscript  -e "devtools::install_github('rstudio/reticulate',       clean = TRUE, Ncpus = 16)"        \                                  
+             -e "if( !('x' %in% reticulate::conda_list(conda = '/opt/conda/bin/conda')$name) )          \
+                        reticulate::conda_create(envname = 'r-reticulate', packages = 'python=3.6', conda = '/opt/conda/bin/conda')" \
+             -e "reticulate::use_condaenv(condaenv = 'r-reticulate', conda = '/opt/conda/bin/conda')"   \
              -e "install.packages('tensorflow',       clean = TRUE, Ncpus = 16)"                        \
-             -e "tensorflow::install_tensorflow(version = 'gpu', method = 'auto', conda = '/opt/conda/bin/conda')" \
+             -e "tensorflow::install_tensorflow(version = 'gpu', method = 'conda', conda = '/opt/conda/bin/conda')" \
              -e "devtools::install_github('rstudio/keras', force=T)"                                    \
-             -e "keras::install_keras(method = 'auto',                                                 \
+             -e "keras::install_keras(method = 'conda',                                                 \
                                       version = 'default',                                              \
-                                      tensorflow = 'gpu',                                         \
+                                      tensorflow = 'gpu',                                               \
                                       conda = '/opt/conda/bin/conda')"                                  \
              -e "install.packages('autokeras',        clean = TRUE, Ncpus = 16)"                        \
              -e "autokeras::install_autokeras( method = 'conda',                                        \
                                                conda = '/opt/conda/bin/conda',                          \
-                                               tensorflow = 'gpu',                                \
+                                               tensorflow = 'gpu',                                      \
                                                version = 'default' )"                                   
 #             -e "remotes::install_version('cowplot', version = '0.9.4', clean = TRUE, Ncpus = 16)                       
 
