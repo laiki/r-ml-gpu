@@ -141,7 +141,7 @@ RUN Rscript  -e "install.packages('h2o',  clean = TRUE, Ncpus = 16,             
                                    type='source',                                                       \
                                    repos=c('http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R'))" 
 RUN Rscript  -e "devtools::install_github('rstudio/reticulate',       clean = TRUE, Ncpus = 16)"        \                                  
-             -e "if( !('x' %in% reticulate::conda_list(conda = '/opt/conda/bin/conda')$name) )          \
+             -e "if( !('r-reticulate' %in% reticulate::conda_list(conda = '/opt/conda/bin/conda')$name) )          \
                         reticulate::conda_create(envname = 'r-reticulate', packages = 'python=3.6', conda = '/opt/conda/bin/conda')" \
              -e "reticulate::use_condaenv(condaenv = 'r-reticulate', conda = '/opt/conda/bin/conda')"   \
              -e "install.packages('tensorflow',       clean = TRUE, Ncpus = 16)"                        \
