@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:latest-gpu-py3
+FROM tensorflow/tensorflow:2.0.0-gpu-py3
 
 ARG DEBIAN_FRONTEND=noninteractive
 ## Set a default user. Available via runtime flag `--user docker` 
@@ -68,10 +68,6 @@ RUN apt-get update --fix-missing && \
       libopenblas-dev pbzip2 \
       libcurl4-openssl-dev libssl-dev libxml2-dev
 
-#      ocl-icd-opencl-dev 
-#      libcurl4-gnutls-dev libssl-dev 
-
-      
 #---- cuda stuff ----
 
 #RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin 
@@ -80,26 +76,13 @@ RUN apt-get update --fix-missing && \
 #    add-apt-repository "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/ /" 
 
 RUN apt-get update && \
-    apt-get -y install cuda-10.0 cuda-10.1 cuda-10.2
+    apt-get -y install cuda-10.0 
+#cuda-10.1 cuda-10.2
 
-#RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin && \
-#    mv cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600                               && \
-#    wget http://developer.download.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda-repo-ubuntu1804-10-1-local-10.1.243-418.87.00_1.0-1_amd64.deb && \
-#    dpkg -i cuda-repo-ubuntu1804-10-1-local-10.1.243-418.87.00_1.0-1_amd64.deb                          && \
-#    apt-key add /var/cuda-repo-10-1-local-10.1.243-418.87.00/7fa2af80.pub                               && \
-#    apt-get update                                                                                      && \
-#    apt-get -y install cuda-10.1
 ENV CUDA_HOME="/usr/local/cuda"
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$CUDA_HOME/lib64/:$CUDA_HOME/lib/:$CUDA_HOME/extras/CUPTI/lib64"
 
-     
-#    /opt/conda/bin/conda create -n h2o4gpuenv -c h2oai -c conda-forge h2o4gpu-cuda10 python=3.6 --yes && \
-#    su - rstudio -c "conda init --all" 
-
-    
-
-#    pip install h2o4gpu-0.3.2-cp36-cp36m-linux_x86_64.whl
-    
+         
 #---- usefull R packages 
 
 RUN Rscript  -e "install.packages('xml2',             clean = TRUE, Ncpus = 16)" \
@@ -145,21 +128,18 @@ RUN Rscript  -e "devtools::install_github('rstudio/reticulate',       clean = TR
                         reticulate::conda_create(envname = 'r-reticulate', packages = 'python=3.6', conda = '/opt/conda/bin/conda')" \
              -e "reticulate::use_condaenv(condaenv = 'r-reticulate', conda = '/opt/conda/bin/conda')"   \
              -e "install.packages('tensorflow',       clean = TRUE, Ncpus = 16)"                        \
-             -e "tensorflow::install_tensorflow(version = 'gpu', method = 'conda', conda = '/opt/conda/bin/conda')" \
+             -e "tensorflow::install_tensorflow(version = '2.0.0-gpu', method = 'conda', conda = '/opt/conda/bin/conda')" \
              -e "devtools::install_github('rstudio/keras', force=T)"                                    \
              -e "keras::install_keras(method = 'conda',                                                 \
                                       version = 'default',                                              \
-                                      tensorflow = 'gpu',                                               \
+                                      tensorflow = '2.0.0-gpu',                                         \
                                       conda = '/opt/conda/bin/conda')"                                  \
              -e "install.packages('autokeras',        clean = TRUE, Ncpus = 16)"                        \
              -e "autokeras::install_autokeras( method = 'conda',                                        \
                                                conda = '/opt/conda/bin/conda',                          \
-                                               tensorflow = 'gpu',                                      \
-                                               version = 'default' )"                                   
-#             -e "remotes::install_version('cowplot', version = '0.9.4', clean = TRUE, Ncpus = 16)                       
-
-#---- usefull R stuff
-# RUN Rscript -e "ctv::install.views('HighPerformanceComputing',  clean = TRUE, Ncpus = 16)" 
+                                               tensorflow = '2.0.0-gpu',                                \
+                                               version = 'default' )"                                   \
+             -e "install.packages('automl',       clean = TRUE, Ncpus = 16)"
 
 #---- special installation of R packages
 RUN wget "https://cran.r-project.org/src/contrib/Archive/gputools/gputools_1.1.tar.gz" && \
@@ -171,6 +151,6 @@ RUN wget "https://cran.r-project.org/src/contrib/Archive/gputools/gputools_1.1.t
     
 EXPOSE 8787 54321
 
-# h2o port 54321 seems only available when starting the image with --network=hoat
+# h2o port 54321 seems only available when starting the image with --network=host
 # e.g. docker run --rm    --gpus all   --network=host -v <local source dir>:/home/rstudio/src --name <identifier> laiki/r-ml-gpu:latest
 # have fun ;)
