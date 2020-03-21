@@ -134,13 +134,15 @@ RUN Rscript  -e "devtools::install_github('rstudio/reticulate',       clean = TR
                                       version = 'default',                                              \
                                       tensorflow = '2.0.0-gpu',                                         \
                                       conda = '/opt/conda/bin/conda')"                                  \
-             -e "install.packages('autokeras',        clean = TRUE, Ncpus = 16)"                        \
-             -e "autokeras::install_autokeras( method = 'conda',                                        \
-                                               conda = '/opt/conda/bin/conda',                          \
-                                               tensorflow = '2.0.0-gpu',                                \
-                                               version = 'default' )"                                   \
              -e "install.packages('automl',       clean = TRUE, Ncpus = 16)"                            \
              -e "install.packages('lime',         clean = TRUE, Ncpus = 16)"                            
+
+# autokeras needs tensorflow >= 2.1.0
+RUN Rscript  -e "install.packages('autokeras',        clean = TRUE, Ncpus = 16)"                        \
+             -e "autokeras::install_autokeras( method = 'conda',                                        \
+                                               conda = '/opt/conda/bin/conda',                          \
+                                               tensorflow = '2.1.0-gpu',                                \
+                                               version = 'default' )"                                   
 
 #---- special installation of R packages
 RUN wget "https://cran.r-project.org/src/contrib/Archive/gputools/gputools_1.1.tar.gz" && \
