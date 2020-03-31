@@ -36,7 +36,9 @@ RUN wget "https://cran.r-project.org/src/contrib/Archive/gputools/gputools_1.1.t
     R CMD INSTALL --configure-args='--with-nvcc=/usr/local/cuda/bin/nvcc --with-r-include=/usr/share/R/include' gputools_1.1.tar.gz && \
     rm gputools_1.1.tar.gz
 
-RUN Rscript  -e "install.packages('splitTools',        clean = TRUE, Ncpus = 16)" 
+RUN Rscript  -e "install.packages('splitTools',       clean = TRUE, Ncpus = 16)" 
+RUN Rscript  -e "install.packages('cloudml',          clean = TRUE, Ncpus = 16)" 
+     
 EXPOSE 8787 54321
 
 # h2o port 54321 seems only available when starting the image with --network=host
